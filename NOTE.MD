@@ -2,29 +2,34 @@ Static Website Example - Build MultiStage
 -----------------------------------------
  - Dockerfile
 
-FROM debian:bullseye-20240722-slim as files
+> #Premier Stage
 
-LABEL maintainer='kouokamcarl@gmail.com'
+> FROM debian:bullseye-20240722-slim as files
 
-RUN DEBIAN_FRONTEND=noninteractive apt update && apt install git -y && apt clean -y && rm -Rf /var/lib/apt/lists/*
+> LABEL maintainer='kouokamcarl@gmail.com'
 
-RUN mkdir /opt/files
+> RUN DEBIAN_FRONTEND=noninteractive apt update && apt install git -y && apt clean -y && rm -Rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/OlivierKouokam/static-website-example.git /opt/files/
+> RUN mkdir /opt/files
 
-FROM nginx:alpine3.20-slim
+> RUN git clone https://github.com/OlivierKouokam/static-website-example.git /opt/files/
 
-LABEL maintainer='kouokamcarl@gmail.com'
+> #Deuxieme Stage
 
-ENV PORT=8090
+> FROM nginx:alpine3.20-slim
 
-COPY --from=files /opt/files/ /usr/share/nginx/html/
+> LABEL maintainer='kouokamcarl@gmail.com'
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+> ENV PORT=8090
 
-EXPOSE 8090
+> COPY --from=files /opt/files/ /usr/share/nginx/html/
 
-CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+> COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+> EXPOSE 8090
+
+> CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+
 
  - Commande docker pour builder l'image
 
