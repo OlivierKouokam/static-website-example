@@ -8,6 +8,7 @@ RUN git clone https://github.com/OlivierKouokam/static-website-example.git /opt/
 #
 FROM nginx:alpine3.20-slim
 LABEL maintainer='kouokamcarl@gmail.com'
+ENV PORT=8090
 COPY --from=files /opt/files/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8090
